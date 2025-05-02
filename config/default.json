@@ -1,0 +1,30 @@
+{ 
+    "app": {
+      "host":"0.0.0.0",
+      "port": 7002,
+      "version": "v1",
+      "api_key": "temp_secret123"
+    },
+    "gemini": {
+        "api_key": "your_api_key",
+        "model": "gemini-2.0-flash",
+        "max_tokens": 8192
+    },
+    "weather": {
+        "api_key": "your_api_key",
+        "openweathermap_url": "https://api.openweathermap.org/data/2.5/weather"
+    },
+    "wikipedia": {
+        "base_url": "https://en.wikipedia.org/api/rest_v1/page/summary/"
+    },
+    "research": {
+        "semantic_scholar_url": "https://api.semanticscholar.org/graph/v1/paper/search",
+        "google_scholar_url": "https://scholar.google.com/scholar",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "results_limit": 5
+    },
+    "logging": {
+        "level": "info",
+        "file": "/var/log/promta.log"
+    }
+}
