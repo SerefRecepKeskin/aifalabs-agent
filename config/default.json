@@ -5,6 +5,13 @@
       "version": "v1",
       "api_key": "temp_secret123"
     },
+    "postgres": {
+      "db_host": "postgres",
+      "db_port": 5432,
+      "db_name": "logdb",
+      "db_user": "postgres",
+      "db_password": "postgres"
+    },
     "gemini": {
         "api_key": "your_api_key",
         "model": "gemini-2.0-flash",
@@ -12,7 +19,7 @@
     },
     "weather": {
         "api_key": "your_api_key",
-        "openweathermap_url": "https://api.openweathermap.org/data/2.5/weather"
+        "weatherapi_url": "http://api.weatherapi.com/v1/current.json"
     },
     "wikipedia": {
         "base_url": "https://en.wikipedia.org/api/rest_v1/page/summary/"
