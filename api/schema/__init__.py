@@ -1,6 +1,6 @@
-from .agent import ChatRequest,ChatResponse
+from .agent import MessageRequest, MessageResult
 
 __all__ = [
-    "ChatRequest",
-    "ChatResponse",
+    "MessageRequest",
+    "MessageResult",
 ]

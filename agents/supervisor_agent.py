@@ -32,6 +32,9 @@ class SupervisorAgent(BaseAgent):
             
         # Get the agent with the highest confidence
         selected_agent = max(confidence_scores, key=confidence_scores.get)
+        if confidence_scores[selected_agent] <= 0:
+            logger.warning("No agent found with sufficient confidence for query: '%s'", query)
+            return None
         logger.info("Selected agent '%s' with confidence %.2f", selected_agent, confidence_scores[selected_agent])
         return self.agents[selected_agent]
         

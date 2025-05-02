@@ -4,14 +4,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.route.agent import chat_router
-from api.service.agent import AgentService
+from chatbot.worker import AgentWorker
 from api.exception.agent import register_exception_handlers
 from config import config
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize services on startup
-    app.state.agent_service = await AgentService.create()
+    app.state.agent_worker = await AgentWorker.create()
     yield
     # Clean up resources if needed
 
