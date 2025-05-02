@@ -39,9 +39,14 @@ async def get_city_info(city_name: str) -> Dict[str, Any]:
         logger.exception(error_msg)
         return {"error": "An unexpected error occurred while retrieving city information"}
 
-async def get_weather_info(city_name: str) -> Dict[str, Any]:
-    """Get weather information for a city from OpenWeatherMap API"""
-    logger.info(f"Fetching weather information for: {city_name}")
+async def get_weather_info(city_name: str, date: str = None) -> Dict[str, Any]:
+    """Get weather information for a city from WeatherAPI
+    
+    Args:
+        city_name: The name of the city
+        date: Optional specific date in YYYY-MM-DD format
+    """
+    logger.info(f"Fetching weather information for: {city_name}{' for date: ' + date if date else ''}")
     try:
         # Get API key from config
         API_KEY = config.get('weather', {}).get('api_key', '')
@@ -49,22 +54,33 @@ async def get_weather_info(city_name: str) -> Dict[str, Any]:
             logger.error("Weather API key not found in configuration")
             return {"error": "Weather API key is missing in configuration"}
             
-        base_url = config.get('weather', {}).get('openweathermap_url', 'https://api.openweathermap.org/data/2.5/weather')
+        base_url = config.get('weather', {}).get('weatherapi_url', 'http://api.weatherapi.com/v1/current.json')
         
         async with aiohttp.ClientSession() as session:
-            url = f"{base_url}?q={city_name}&appid={API_KEY}&units=metric"
+            url = f"{base_url}?key={API_KEY}&q={city_name}"
+            # Add date parameter if provided
+            if date:
+                url += f"&dt={date}"
             
-            logger.debug(f"Making request to OpenWeatherMap API for {city_name}")
+            logger.debug(f"Making request to WeatherAPI for {city_name}: {url}")
             try:
                 async with session.get(url) as response:
                     if response.status == 200:
                         logger.debug(f"Successfully received weather data for {city_name}")
                         data = await response.json()
+                        current = data.get("current", {})
+                        condition = current.get("condition", {})
+                        
                         result = {
-                            "temperature": data.get("main", {}).get("temp", ""),
-                            "humidity": data.get("main", {}).get("humidity", ""),
-                            "conditions": data.get("weather", [{}])[0].get("description", ""),
-                            "wind_speed": data.get("wind", {}).get("speed", "")
+                            "temperature": current.get("temp_c", ""),
+                            "humidity": current.get("humidity", ""),
+                            "conditions": condition.get("text", ""),
+                            "wind_speed": current.get("wind_kph", ""),
+                            "feels_like": current.get("feelslike_c", ""),
+                            "uv_index": current.get("uv", ""),
+                            "pressure": current.get("pressure_mb", ""),
+                            "precipitation": current.get("precip_mm", ""),
+                            "last_updated": current.get("last_updated", "")
                         }
                         logger.info(f"Returning weather data for: {city_name}")
                         return result
@@ -74,7 +90,7 @@ async def get_weather_info(city_name: str) -> Dict[str, Any]:
                         try:
                             error_data = await response.json()
                             logger.error(f"Error details: {error_data}")
-                            return {"error": f"Could not find weather for {city_name}", "details": error_data.get("message", "")}
+                            return {"error": f"Could not find weather for {city_name}", "details": error_data.get("error", {}).get("message", "")}
                         except:
                             return {"error": f"Could not find weather for {city_name}", "status": response.status}
             except aiohttp.ClientError as e:

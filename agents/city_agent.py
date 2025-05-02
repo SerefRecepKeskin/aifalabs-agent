@@ -49,8 +49,24 @@ class CityAgent(BaseAgent):
         
         # Get the appropriate information
         if is_weather_query:
-            weather_data = await get_weather_info(city_name)
-            context_data = {"city": city_name, "weather_data": weather_data}
+            # Extract date if present in the query
+            date_extract_prompt = """Extract the specific date from this query in YYYY-MM-DD format.
+            If no specific date is mentioned, respond with 'None'.
+            Query: {query}"""
+            
+            date_extract_messages = [
+                ChatMessage(role="system", content=date_extract_prompt.format(query=query)),
+                ChatMessage(role="user", content=query)
+            ]
+            
+            date = await self._get_llm_response(date_extract_messages)
+            # Normalize the date response
+            if date.lower() in ['none', 'no date', 'no specific date']:
+                date = None
+                
+            # Call the API with the date parameter
+            weather_data = await get_weather_info(city_name, date)
+            context_data = {"city": city_name, "weather_data": weather_data, "date": date}
         else:
             city_data = await get_city_info(city_name)
             context_data = {"city": city_name, "city_data": city_data}
