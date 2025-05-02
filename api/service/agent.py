@@ -2,7 +2,7 @@ from typing import Dict, Any
 from llama_index.core import Settings
 from agents import SupervisorAgent,CityAgent,ResearchAgent,ProductAgent 
 from util.client import GeminiClient
-from db.connector import setup_database
+from db.setup_database import setup_database
 from util import logger
 
 class AgentService:
