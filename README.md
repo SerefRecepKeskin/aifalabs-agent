@@ -193,6 +193,59 @@ The project includes a health check endpoint to verify that the API is running a
 
 ---
 
+## Postman Collection
+
+A Postman collection is included in the project to help you test the API endpoints easily. The collection provides pre-configured requests for each feature of the API.
+
+### Importing the Collection
+
+1. **Download Postman**:
+   - Download and install Postman from [https://www.postman.com/downloads/](https://www.postman.com/downloads/)
+
+2. **Import the Collection**:
+   - Open Postman
+   - Click on "Import" in the top-left corner
+   - Select "File" > "Upload Files" and choose the `postman_collection.json` file from the project directory
+   - Click "Import" to add the collection to your Postman workspace
+
+### Using the Collection
+
+1. **Configure Environment Variables**:
+   - The collection uses a variable `{{base_url}}` which is set to `http://localhost:7002` by default
+   - You can modify this in the "Variables" section of the collection if your API is hosted elsewhere
+
+2. **Available Endpoints**:
+   - **Health Check**: Tests if the API is up and running
+   - **Chat with Research Agent**: Send research-related queries
+   - **Chat with Product Agent**: Send product-related queries
+   - **Chat with City Agent**: Send city/weather-related queries
+
+3. **Testing the Endpoints**:
+   - Select any request from the collection
+   - Review and modify the request body if needed
+   - Click the "Send" button to make the request
+   - The response will be displayed in the lower section of the Postman interface
+
+4. **Authentication**:
+   - All requests include the `X-API-Key` header set to `temp_secret123` by default
+   - Update this value if you've changed the API key in your configuration
+
+### Example Usage
+
+To test the weather information functionality:
+1. Select the "Chat with City Agent" request
+2. In the request body, change the message to something like: "What's the weather like in Tokyo today?"
+3. Click "Send"
+4. Review the response from the chatbot in the response panel
+
+This collection is particularly useful for:
+- Testing API functionality
+- Understanding the request/response format
+- Debugging integration issues
+- Demonstrating the API capabilities to others
+
+---
+
 ## Features
 
 1. **LlamaIndex Integration**:
