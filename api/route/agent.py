@@ -32,3 +32,11 @@ async def chat(request: MessageRequest,
         )
     except Exception as e:
         raise AgentProcessingError(str(e))
+
+
+@chat_router.get("/health", tags=["health"])
+async def health_check():
+    """
+    Health check endpoint to verify that the API is running
+    """
+    return {"status": "healthy", "message": "Service is running"}
