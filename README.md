@@ -284,7 +284,7 @@ Database connection settings are specified in the `config/default.json` file:
 
 ```json
 "postgres": {
-  "db_host": "localhost",
+  "db_host": "postgres",
   "db_port": 5432,
   "db_name": "agentdb",
   "db_user": "postgres",
