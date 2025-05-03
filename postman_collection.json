@@ -1,0 +1,117 @@
+{
+    "info": {
+        "name": "AIFALabs Agent API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "x-api-key",
+                        "value": "temp_secret123",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/health",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "health"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Chat with Research Agent",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    },
+                    {
+                        "key": "x-api-key",
+                        "value": "temp_secret123",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/chat",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "chat"]
+                },
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"user_message\": \"Tell me about quantum computing research.\",\n    \"session_identifier\": \"00000000-0000-0000-0000-000000000001\",\n    \"user_identifier\": \"00000000-0000-0000-0000-000000000002\"\n}"
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Chat with Product Agent",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    },
+                    {
+                        "key": "x-api-key",
+                        "value": "temp_secret123",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/chat",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "chat"]
+                },
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"user_message\": \"What are the details of the iPhone 14?\",\n    \"session_identifier\": \"00000000-0000-0000-0000-000000000003\",\n    \"user_identifier\": \"00000000-0000-0000-0000-000000000004\"\n}"
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Chat with City Agent",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    },
+                    {
+                        "key": "x-api-key",
+                        "value": "temp_secret123",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/chat",
+                    "host": ["{{base_url}}"],
+                    "path": ["api", "v1", "chat"]
+                },
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"user_message\": \"What is the weather in Paris?\",\n    \"session_identifier\": \"00000000-0000-0000-0000-000000000005\",\n    \"user_identifier\": \"00000000-0000-0000-0000-000000000006\"\n}"
+                }
+            },
+            "response": []
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:7002"
+        }
+    ]
+}
