@@ -25,6 +25,7 @@ services:
     build:
       context: .
     image: aifalabs-agent
+    pull_policy: never
     container_name: aifalabs-agent
     ports:
       - "7002:7002"
