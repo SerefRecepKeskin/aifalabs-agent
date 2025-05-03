@@ -14,18 +14,18 @@ class ImprovedCondenseQueryEngine:
         self.llm = llm or Settings.llm
         self.condense_template = PromptTemplate(CONDENSE_PROMPT_TEMPLATE)
     
-    async def condense_question(self, question: str, chat_history: List[Dict[str, str]]) -> str:
+    async def condense_question(self, question: str, chat_history: List[ChatMessage]) -> str:
         """Condense a question based on chat history."""
         if not chat_history:
             return question
             
         # Format chat history for the prompt
         formatted_history = ""
-        for entry in chat_history:
-            if "user_message" in entry:
-                formatted_history += f"User: {entry['user_message']}\n"
-            if "assistant_message" in entry:
-                formatted_history += f"Assistant: {entry['assistant_message']}\n"
+        for message in chat_history:
+            if message.role == MessageRole.USER:
+                formatted_history += f"User: {message.content}\n"
+            elif message.role == MessageRole.ASSISTANT:
+                formatted_history += f"Assistant: {message.content}\n"
         
         # Format the prompt
         prompt = self.condense_template.format(
@@ -45,7 +45,7 @@ class ImprovedCondenseQueryEngine:
 
     async def condense_with_additional_context(self, 
                                         question: str, 
-                                        chat_history: List[Dict[str, str]], 
+                                        chat_history: List[ChatMessage], 
                                         additional_context: Optional[str] = None) -> str:
         """Condense a question with optional additional context."""
         condensed_question = await self.condense_question(question, chat_history)
