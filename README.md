@@ -93,7 +93,7 @@ The `config/default.json` file contains the following settings:
     "api_key": "temp_secret123"
   },
   "postgres": {
-    "db_host": "localhost",
+    "db_host": "postgres",
     "db_port": 5432,
     "db_name": "agentdb",
     "db_user": "postgres",
