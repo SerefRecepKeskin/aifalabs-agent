@@ -1,8 +1,6 @@
 from .connector import get_connection
 from util import logger
-from sqlalchemy import Column, DateTime, Integer, VARCHAR, func, UniqueConstraint
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.ext.declarative import declarative_base
+
 
 # Define initial setup function
 async def setup_database():
