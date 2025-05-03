@@ -34,9 +34,7 @@ class CustomChatEngine(SimpleChatEngine):
         # format messages for sending to llm
         messages = formatter.format_messages(
             chat_history=chat_history or [],
-            user_message=message,
-            agent_response=agent_response,  # Pass the new parameter
-        )
+            user_message=message)
 
         response = await self._llm.achat(
             messages=messages

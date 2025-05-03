@@ -10,14 +10,12 @@ class ChatMessageFormatter:
     def format_messages(
         self,
         chat_history: List[ChatMessage],
-        agent_response: AnyStr = None,
         user_message: AnyStr = None
     ) -> List[ChatMessage]:
         """
         Format messages for sending to vLLM
 
         :param chat_history: user chat history
-        :param agent_response: agent response
         :param user_message: user message
         :return: list of chat messages
         """
@@ -41,15 +39,7 @@ class ChatMessageFormatter:
 
         formatted_messages.extend(chat_messages)
 
-        if (user_message is not None) and (agent_response is not None):
-            user_message = f'User Message: {user_message}\ Agent Response: {agent_response}'
-
-            formatted_messages.append(ChatMessage(
-                role=MessageRole.USER,
-                content=user_message
-            ))
-
-        elif user_message is not None:
+        if user_message is not None:
 
             formatted_messages.append(ChatMessage(
                 role=MessageRole.USER,

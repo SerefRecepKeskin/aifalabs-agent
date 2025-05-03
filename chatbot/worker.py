@@ -102,17 +102,16 @@ class AgentWorker:
             agent_response= None
             if selected_agent is not None:
                 logger.debug(f"Processing query with selected agent")
-                agent_response = await selected_agent.process_query(condensed_query)
+                assistant_message = await selected_agent.process_query(condensed_query)
+            else:
+                # If no response is received from the agents, we aim to provide the most reasonable answer using chat history and the user message.
+                query_result = await self.chat_engine.achat(
+                    condensed_query,
+                    chat_history=chat_history,
+                    agent_response=agent_response
+                )
 
-
-            # get response by user message, agent response and chat history
-            query_result = await self.chat_engine.achat(
-                condensed_query,
-                chat_history=chat_history,
-                agent_response=agent_response
-            )
-
-            assistant_message = query_result.message.blocks[0].text
+                assistant_message = query_result.message.blocks[0].text
 
 
             # Save messages to session
@@ -120,7 +119,7 @@ class AgentWorker:
             await self._session_manager.save_messages(
                 session_id=session_id,
                 message_identifier=message_identifier,
-                user_message=user_message,
+                user_message=condensed_query,
                 assistant_message=assistant_message
             )
 
@@ -134,4 +133,4 @@ class AgentWorker:
             return {
                 "response": "I apologize, but something went wrong. Please try again later.",
                 "message_identifier": message_identifier}
-        
+
