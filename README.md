@@ -193,6 +193,64 @@ The project includes a health check endpoint to verify that the API is running a
 
 ---
 
+## Database Setup
+
+The project uses PostgreSQL for data persistence. The database is automatically initialized during the first startup through the `setup_database.py` script.
+
+### Database Tables
+
+1. **products**: Stores product information used by the Product Agent
+   - `id`: Serial primary key
+   - `name`: Product name (VARCHAR)
+   - `description`: Product description (TEXT)
+   - `price`: Product price (DECIMAL)
+   - `created_at`: Creation timestamp
+
+2. **chat_history**: Stores user conversation history
+   - `id`: Serial primary key
+   - `user_id`: Identifier for the user (VARCHAR)
+   - `session_id`: Identifier for the chat session (VARCHAR)
+   - `messages`: JSON array of chat messages (JSONB)
+   - `updated_at`: Last update timestamp
+
+### Initialization Process
+
+On first run, the system:
+1. Creates necessary tables if they don't exist
+2. Creates appropriate indexes on frequently queried columns
+3. Populates the products table with sample data (only if the table is empty)
+
+Sample products include:
+- Smartphone X
+- Laptop Pro
+- Wireless Earbuds
+- Smart Watch
+- Coffee Maker
+
+The database setup process is logged for troubleshooting purposes.
+
+### Database Configuration
+
+Database connection settings are specified in the `config/default.json` file:
+
+```json
+"postgres": {
+  "db_host": "localhost",
+  "db_port": 5432,
+  "db_name": "agentdb",
+  "db_user": "postgres",
+  "db_password": "postgres"
+}
+```
+
+For production environments, it's recommended to:
+- Use environment variables for credentials
+- Implement database connection pooling
+- Set up regular database backups
+- Configure proper user permissions
+
+---
+
 ## Postman Collection
 
 A Postman collection is included in the project to help you test the API endpoints easily. The collection provides pre-configured requests for each feature of the API.
