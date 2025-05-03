@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, Header, Request
 from api.schema import MessageRequest, MessageResult
 from api.exception.agent import AgentProcessingError
 from api.service import AgentService
 from chatbot.worker import AgentWorker
+from api.service.auth import AuthService
+from typing import Annotated
+
+
 chat_router = APIRouter(tags=["chat"])
 
 async def get_agent_worker(request: Request) -> AgentWorker:
@@ -11,10 +15,26 @@ async def get_agent_worker(request: Request) -> AgentWorker:
     """
     return request.app.state.agent_worker
 
+async def verify_api_key(x_api_key: Annotated[str, Header()]) -> str:
+    """
+    Verify the API key from request header.
+    
+    Args:
+        x_api_key: API key from request header
+    
+    Returns:
+        str: Verified API key
+    
+    Raises:
+        HTTPException: If API key is invalid
+    """
+    AuthService.check_auth(x_api_key)
+    return x_api_key
 
 @chat_router.post("/chat", response_model=MessageResult)
-async def chat(request: MessageRequest,
-            agent_worker: AgentWorker = Depends(get_agent_worker)
+async def chat(token: Annotated[str, Depends(verify_api_key)],
+               request: MessageRequest,
+               agent_worker: AgentWorker = Depends(get_agent_worker)
 ):
     try:
         agent_service = AgentService(agent_worker)
