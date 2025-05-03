@@ -15,6 +15,12 @@ Respond with a confidence score between 0 and 1, where 1 means you're certain th
 Only respond with the number.
 """
 
+QUERY_TYPE_PROMPT = """Determine if the following query is specifically about weather or just general city information.
+Query: "{query}"
+If it's about weather, respond with "weather".
+If it's about general city information, respond with "city".
+"""
+
 class CityAgent(BaseAgent):
     """Agent handling city and weather information"""
     
@@ -36,16 +42,42 @@ class CityAgent(BaseAgent):
         
     async def process_query(self, query: str, context: Dict[str, Any] = None) -> str:
         """Process a city or weather query"""
-        # Determine if this is about weather or general city info
-        is_weather_query = "weather" in query.lower()
+        # Determine if this is about weather or general city info using LLM
+        query_type_messages = [
+            ChatMessage(role="system", content=QUERY_TYPE_PROMPT.format(query=query)),
+            ChatMessage(role="user", content=query)
+        ]
+        query_type_response = await self._get_llm_response(query_type_messages)
+        is_weather_query = "weather" in query_type_response.lower()
         
         # Extract city name using LLM
-        extract_prompt = "Extract the name of the city from this query: {query}"
+        extract_prompt = """Extract the name of the city from this query. 
+        If no city is mentioned or you can't identify a city, respond with 'unknown_city'.
+        Query: {query}"""
         extract_messages = [
             ChatMessage(role="system", content=extract_prompt.format(query=query)),
             ChatMessage(role="user", content=query)
         ]
         city_name = await self._get_llm_response(extract_messages)
+        city_name = city_name.strip()
+        
+        # Handle case where city name extraction failed
+        if city_name.lower() in ["unknown_city"]:
+            # Fallback: Try a more direct approach to extract location
+            fallback_prompt = """The user is asking about a location. 
+            Try to identify any geographic location (city, country, region, etc.) in this query.
+            If you still can't identify a location, respond with 'unknown'.
+            Query: {query}"""
+            
+            fallback_messages = [
+                ChatMessage(role="system", content=fallback_prompt.format(query=query)),
+                ChatMessage(role="user", content=query)
+            ]
+            city_name = await self._get_llm_response(fallback_messages)
+            city_name = city_name.strip()
+            
+            if city_name.lower() == 'unknown':
+                return "I'm sorry, I couldn't identify which location you're asking about. Could you please specify a city or location?"
         
         # Get the appropriate information
         if is_weather_query:
@@ -61,15 +93,24 @@ class CityAgent(BaseAgent):
             
             date = await self._get_llm_response(date_extract_messages)
             # Normalize the date response
-            if date.lower() in ['none', 'no date', 'no specific date']:
+            date = date.strip()
+            if date.lower() in ['none', 'no date', 'no specific date'] or 'none' in date.lower():
                 date = None
                 
-            # Call the API with the date parameter
-            weather_data = await get_weather_info(city_name, date)
-            context_data = {"city": city_name, "weather_data": weather_data, "date": date}
+            try:
+                # Call the API with the date parameter
+                weather_data = await get_weather_info(city_name, date)
+                context_data = {"city": city_name, "weather_data": weather_data, "date": date}
+            except Exception as e:
+                # Fallback for API errors
+                return f"I'm sorry, I couldn't retrieve weather information for {city_name}. Error: {str(e)}"
         else:
-            city_data = await get_city_info(city_name)
-            context_data = {"city": city_name, "city_data": city_data}
+            try:
+                city_data = await get_city_info(city_name)
+                context_data = {"city": city_name, "city_data": city_data}
+            except Exception as e:
+                # Fallback for API errors
+                return f"I'm sorry, I couldn't retrieve information for {city_name}. Error: {str(e)}"
         
         # Format response using LLM
         system_content = self.system_prompt + "\nHere is information about the query: " + str(context_data)
