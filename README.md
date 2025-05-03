@@ -108,6 +108,15 @@ The `config/default.json` file contains the following settings:
     "api_key": "YOUR_WEATHER_API_KEY",
     "weatherapi_url": "http://api.weatherapi.com/v1/current.json"
   },
+  "wikipedia": {
+    "base_url": "https://en.wikipedia.org/api/rest_v1/page/summary/"
+  },
+  "research": {
+    "semantic_scholar_url": "https://api.semanticscholar.org/graph/v1/paper/search",
+    "google_scholar_url": "https://scholar.google.com/scholar",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "results_limit": 5
+  },
   "logging": {
     "level": "info",
     "file": "/var/log/promta.log"
@@ -116,6 +125,46 @@ The `config/default.json` file contains the following settings:
 ```
 
 Replace `YOUR_GEMINI_API_KEY` and `YOUR_WEATHER_API_KEY` with the respective API keys.
+
+---
+
+## External API Integrations
+
+The system integrates with several external APIs to enhance the chatbot's knowledge and capabilities:
+
+### 1. Weather API
+- **Provider**: WeatherAPI.com
+- **Purpose**: Retrieves current weather information for cities around the world
+- **Integration**: The City Agent uses this API to answer weather-related questions
+- **Endpoints Used**: `/current.json` - Provides current weather data
+- **Data Retrieved**: Temperature, weather conditions, humidity, wind speed, and other meteorological data
+- **Configuration**: Requires an API key from WeatherAPI.com
+
+### 2. Wikipedia API
+- **Provider**: Wikimedia REST API
+- **Purpose**: Retrieves factual information about topics, places, people, etc.
+- **Integration**: Used to provide general knowledge information to supplement agent responses
+- **Endpoints Used**: `/page/summary/` - Provides concise summaries of Wikipedia articles
+- **Data Retrieved**: Article summaries, descriptions, and basic facts
+- **Configuration**: No API key required, but requests are rate-limited
+
+### 3. Research APIs
+- **Provider**: Multiple sources (Semantic Scholar and Google Scholar)
+- **Purpose**: Retrieves academic papers and research information
+- **Integration**: The Research Agent uses these APIs to answer academic and research-related questions
+- **Endpoints Used**:
+  - Semantic Scholar: `/paper/search` - Searches for academic papers
+  - Google Scholar: Web scraping with appropriate user agent
+- **Data Retrieved**: Paper titles, authors, abstracts, publication dates, and citation information
+- **Configuration**: 
+  - Semantic Scholar doesn't require an API key for basic usage
+  - Google Scholar access is configured with an appropriate user agent to avoid blocking
+
+### API Usage Notes
+- The system implements rate limiting and caching to avoid overloading external APIs
+- Error handling is in place to gracefully handle API unavailability or rate limiting
+- Results from external APIs are processed and contextualized before being presented to users
+- External API responses are combined with the LLM's knowledge to provide comprehensive answers
 
 ---
 
