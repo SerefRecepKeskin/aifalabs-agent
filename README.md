@@ -219,8 +219,8 @@ The project includes a health check endpoint to verify that the API is running a
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-repo/aifalabs-agent.git
-   cd aifalabs-agent
+   git clone https://github.com/your-repo/Multi-Domain-Chatbot-Agent.git
+   cd Multi-Domain-Chatbot-Agent
    ```
 
 2. **Set Up Configuration**:
